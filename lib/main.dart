@@ -53,7 +53,7 @@ class LoginScreen extends StatelessWidget {
       if (userCredential.user != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => EventListScreen()),
+          MaterialPageRoute(builder: (context) => UserEventListScreen()),
         );
       }
     } catch (e) {
@@ -438,8 +438,151 @@ class EventDetailScreen extends StatelessWidget {
               'Descrição: ${event.description}',
               style: TextStyle(fontSize: 16),
             ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PurchaseScreen(event: event),
+                  ),
+                );
+              },
+              child: Text('Comprar'),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class UserEventListScreen extends StatelessWidget {
+  final CollectionReference eventsRef = FirebaseFirestore.instance.collection('events');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Eventos'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.admin_panel_settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventListScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: eventsRef.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final events = snapshot.data!.docs.map((doc) => Event.fromFirestore(doc)).toList();
+
+          return ListView.builder(
+            itemCount: events.length,
+            itemBuilder: (context, index) {
+              return Card(
+                elevation: 4,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: ListTile(
+                  title: Text(events[index].title),
+                  subtitle: Text(events[index].date),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EventDetailScreen(event: events[index]),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class PurchaseScreen extends StatelessWidget {
+  final Event event;
+
+  PurchaseScreen({required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Finalizar Compra'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Evento: ${event.title}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Data: ${event.date}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Local: ${event.location}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Descrição: ${event.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Lógica para finalizar a compra do ingresso
+                _completePurchase(context);
+              },
+              child: Text('Confirmar Compra'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _completePurchase(BuildContext context) {
+    // Implemente a lógica de finalização da compra aqui
+
+    // Exemplo de confirmação de compra com um diálogo
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Compra Realizada'),
+        content: Text('Sua compra foi realizada com sucesso!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(); // Fecha a tela de compra
+            },
+            child: Text('OK'),
+          ),
+        ],
       ),
     );
   }
@@ -480,8 +623,3 @@ class Event {
     };
   }
 }
-
-
-
-
-
