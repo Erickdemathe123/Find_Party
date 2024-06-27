@@ -1,8 +1,7 @@
 import 'dart:math';
+import 'package:find_party/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'main.dart';
 
 void main() => runApp(MyApp());
 
@@ -94,20 +93,24 @@ class _CompraPageState extends State<CompraPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Card(
-              elevation: 3.0,
-              child: Container(
-                padding: EdgeInsets.all(20.0),
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Método de Pagamento',
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
+                    SizedBox(height: 10.0),
                     DropdownButton<String>(
                       value: _selectedPaymentMethod,
                       onChanged: (newValue) {
@@ -126,180 +129,25 @@ class _CompraPageState extends State<CompraPage> {
                             value,
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
+                              fontSize: 16.0,
                             ),
                           ),
                         );
                       }).toList(),
+                      isExpanded: true,
                     ),
                     SizedBox(height: 20.0),
                     if (_selectedPaymentMethod == 'Cartão de Crédito')
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Número do Cartão',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          TextFormField(
-                            controller: _cardNumberController,
-                            decoration: InputDecoration(
-                              hintText: '0000 0000 0000 0000',
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(16),
-                            ],
-                            validator: _validateCardNumber,
-                          ),
-                          SizedBox(height: 10.0),
-                          Text(
-                            'Nome Completo',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          TextFormField(
-                            controller: _cardNameController,
-                            decoration: InputDecoration(
-                              hintText: 'Nome Sobrenome',
-                            ),
-                            validator: (value) {
-                              if (value?.isEmpty ?? true) {
-                                return 'Nome inválido';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 10.0),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Validade',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            controller: _cardMonthController,
-                                            decoration: InputDecoration(
-                                              hintText: 'MM',
-                                            ),
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.digitsOnly,
-                                              LengthLimitingTextInputFormatter(2),
-                                            ],
-                                            validator: _validateMonth,
-                                          ),
-                                        ),
-                                        SizedBox(width: 10.0),
-                                        Expanded(
-                                          child: TextFormField(
-                                            controller: _cardYearController,
-                                            decoration: InputDecoration(
-                                              hintText: 'AA',
-                                            ),
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.digitsOnly,
-                                              LengthLimitingTextInputFormatter(4),
-                                            ],
-                                            validator: _validateYear,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 20.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'CVC',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _cardCvvController,
-                                      decoration: InputDecoration(
-                                        hintText: 'CVC',
-                                      ),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(3),
-                                      ],
-                                      validator: _validateCVV,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      _buildCreditCardForm(),
                     if (_selectedPaymentMethod == 'PIX')
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Chave PIX',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          TextFormField(
-                            initialValue: _pixKey,
-                            enabled: false,
-                            decoration: InputDecoration(
-                              hintText: 'Chave PIX gerada',
-                            ),
-                          ),
-                        ],
-                      ),
+                      _buildPixKeyField(),
                   ],
                 ),
               ),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                if (_selectedPaymentMethod == 'Cartão de Crédito') {
-                  if (_cardNumberController.text.length == 16 &&
-                      _cardNameController.text.isNotEmpty &&
-                      _cardMonthController.text.isNotEmpty &&
-                      _cardYearController.text.isNotEmpty &&
-                      _cardCvvController.text.length == 3) {
-                    _showConfirmationDialog();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, preencha todos os campos corretamente')),
-                    );
-                  }
-                } else {
-                  _showConfirmationDialog();
-                }
-              },
+              onPressed: _onFinalizePurchase,
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).hintColor),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -349,6 +197,156 @@ class _CompraPageState extends State<CompraPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildCreditCardForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildTextField(
+          label: 'Número do Cartão',
+          controller: _cardNumberController,
+          hint: '0000 0000 0000 0000',
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(16),
+          ],
+          validator: _validateCardNumber,
+        ),
+        SizedBox(height: 10.0),
+        _buildTextField(
+          label: 'Nome Completo',
+          controller: _cardNameController,
+          hint: 'Nome Sobrenome',
+          validator: (value) {
+            if (value?.isEmpty ?? true) {
+              return 'Nome inválido';
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          children: [
+            Expanded(
+              child: _buildTextField(
+                label: 'Validade (MM)',
+                controller: _cardMonthController,
+                hint: 'MM',
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(2),
+                ],
+                validator: _validateMonth,
+              ),
+            ),
+            SizedBox(width: 10.0),
+            Expanded(
+              child: _buildTextField(
+                label: 'Validade (AAAA)',
+                controller: _cardYearController,
+                hint: 'AAAA',
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(4),
+                ],
+                validator: _validateYear,
+              ),
+            ),
+            SizedBox(width: 20.0),
+            Expanded(
+              child: _buildTextField(
+                label: 'CVC',
+                controller: _cardCvvController,
+                hint: 'CVC',
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(3),
+                ],
+                validator: _validateCVV,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPixKeyField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Chave PIX',
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        SizedBox(height: 10.0),
+        TextFormField(
+          initialValue: _pixKey,
+          enabled: false,
+          decoration: InputDecoration(
+            hintText: 'Chave PIX gerada',
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.all(12.0),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    String? hint,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        SizedBox(height: 5.0),
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.all(12.0),
+          ),
+          inputFormatters: inputFormatters,
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
+  void _onFinalizePurchase() {
+    if (_selectedPaymentMethod == 'Cartão de Crédito') {
+      if (_cardNumberController.text.length == 16 &&
+          _cardNameController.text.isNotEmpty &&
+          _cardMonthController.text.isNotEmpty &&
+          _cardYearController.text.isNotEmpty &&
+          _cardCvvController.text.length == 3) {
+        _showConfirmationDialog();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Por favor, preencha todos os campos corretamente')),
+        );
+      }
+    } else {
+      _showConfirmationDialog();
+    }
   }
 
   void _showConfirmationDialog() {

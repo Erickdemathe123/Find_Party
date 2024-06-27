@@ -20,9 +20,9 @@ Future<void> main() async {
       scaffoldBackgroundColor: Colors.white, // Cor de fundo padrão para o scaffold
       fontFamily: 'Roboto', // Fonte padrão para o aplicativo
       textTheme: TextTheme(
-        headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black), // Estilo de cabeçalho 1
-        headline2: TextStyle(fontSize: 18.0, color: Colors.black), // Estilo de cabeçalho 2
-        bodyText1: TextStyle(fontSize: 16.0, color: Colors.grey[600]), // Estilo de texto do corpo
+        displayLarge: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black), // Estilo de cabeçalho 1
+        displayMedium: TextStyle(fontSize: 18.0, color: Colors.black), // Estilo de cabeçalho 2
+        bodyLarge: TextStyle(fontSize: 16.0, color: Colors.grey[600]), // Estilo de texto do corpo
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
@@ -113,41 +113,74 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text(''),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _login(context);
-              },
-              child: Text('Login'),
-            ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
-                );
-              },
-              child: Text('Register', style: TextStyle(color: Colors.red)),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 50),
+              Text(
+                'Bem vindo ao Find Party',
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  fontSize: 18.0,
+                  color: Color.fromARGB(255, 73, 27, 27),
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Faça o seu login ou registre-se caso ainda não tenha uma conta',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Color.fromARGB(255, 73, 27, 27),
+                  fontWeight: FontWeight.bold
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _login(context);
+                },
+                child: Text('Login'),
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                  );
+                },
+                child: Text('Register', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -251,6 +284,17 @@ class _EventListScreenState extends State<EventListScreen> {
             icon: Icon(Icons.add),
             onPressed: () {
               _navigateToEventFormScreen(context, null);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.exit_to_app), // Ícone de sair da conta
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut(); // Faz logout do usuário
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (route) => false, // Remove todas as rotas da pilha
+              );
             },
           ),
         ],
@@ -453,6 +497,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
     );
   }
 }
+
 class EventDetailScreen extends StatelessWidget {
   final Event event;
 
@@ -648,6 +693,7 @@ class Event {
   final String date;
   final String location;
   final String description;
+  final double price; // Novo campo para armazenar o preço
 
   Event({
     this.id = '',
@@ -655,6 +701,7 @@ class Event {
     required this.date,
     required this.location,
     required this.description,
+    required this.price, // Inclua o preço como parâmetro requerido no construtor
   });
 
   factory Event.fromFirestore(DocumentSnapshot doc) {
@@ -665,6 +712,7 @@ class Event {
       date: data['date'],
       location: data['location'],
       description: data['description'],
+      price: data['price'] ?? 0.0, // Ler o preço do Firestore
     );
   }
 
@@ -674,6 +722,7 @@ class Event {
       'date': date,
       'location': location,
       'description': description,
+      'price': price, // Incluir o preço ao salvar no Firestore
     };
   }
 }
