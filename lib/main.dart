@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'comprar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,22 +16,36 @@ Future<void> main() async {
     home: LoginScreen(),
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
-      primaryColor: Colors.red,
-      hintColor: Colors.black,
-      fontFamily: 'Roboto',
+      primarySwatch: Colors.red, // Cor primária para o tema
+      scaffoldBackgroundColor: Colors.white, // Cor de fundo padrão para o scaffold
+      fontFamily: 'Roboto', // Fonte padrão para o aplicativo
       textTheme: TextTheme(
-        headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black),
-        headline2: TextStyle(fontSize: 18.0, color: Colors.black),
-        bodyText1: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
+        headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black), // Estilo de cabeçalho 1
+        headline2: TextStyle(fontSize: 18.0, color: Colors.black), // Estilo de cabeçalho 2
+        bodyText1: TextStyle(fontSize: 16.0, color: Colors.grey[600]), // Estilo de texto do corpo
       ),
-      buttonTheme: ButtonThemeData(
-        buttonColor: Colors.red,
-        textTheme: ButtonTextTheme.primary,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.red), // Cor de fundo do botão elevado
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // Cor do texto do botão elevado
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.symmetric(vertical: 12, horizontal: 24)), // Preenchimento do botão elevado
+          shape: MaterialStateProperty.all<OutlinedBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4), // Borda do botão elevado
+            ),
+          ),
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-        labelStyle: TextStyle(color: Colors.red),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red), // Cor da borda do campo de entrada
+          borderRadius: BorderRadius.circular(4), // Borda do campo de entrada
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red), // Cor da borda focada do campo de entrada
+          borderRadius: BorderRadius.circular(4), // Borda focada do campo de entrada
+        ),
+        labelStyle: TextStyle(color: Colors.red), // Estilo do rótulo do campo de entrada
       ),
     ),
   ));
@@ -407,7 +422,6 @@ class _EventFormScreenState extends State<EventFormScreen> {
     );
   }
 }
-
 class EventDetailScreen extends StatelessWidget {
   final Event event;
 
@@ -444,7 +458,7 @@ class EventDetailScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PurchaseScreen(event: event),
+                    builder: (context) => MyApp(), // Abre a tela definida em comprar.dart
                   ),
                 );
               },
@@ -467,11 +481,13 @@ class UserEventListScreen extends StatelessWidget {
         title: Text('Eventos'),
         actions: [
           IconButton(
-            icon: Icon(Icons.admin_panel_settings),
-            onPressed: () {
-              Navigator.push(
+            icon: Icon(Icons.exit_to_app), // Ícone de sair da conta
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut(); // Faz logout do usuário
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => EventListScreen()),
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false, // Remove todas as rotas da pilha
               );
             },
           ),
@@ -558,6 +574,13 @@ class PurchaseScreen extends StatelessWidget {
                 _completePurchase(context);
               },
               child: Text('Confirmar Compra'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Voltar para a tela anterior
+              },
+              child: Text('Voltar'),
             ),
           ],
         ),
