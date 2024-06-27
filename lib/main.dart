@@ -66,10 +66,31 @@ class LoginScreen extends StatelessWidget {
       );
 
       if (userCredential.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UserEventListScreen()),
-        );
+        String userId = userCredential.user!.uid;
+
+        // Busca o documento do usuário no Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+        if (userDoc.exists) {
+          bool isAdmin = userDoc['isAdmin'] ?? false;
+
+          if (isAdmin) {
+            // Se o usuário é administrador, redireciona para EventListScreen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => EventListScreen()),
+            );
+          } else {
+            // Se o usuário não é administrador, redireciona para UserEventListScreen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => UserEventListScreen()),
+            );
+          }
+        } else {
+          // Tratar o caso em que o documento do usuário não existe
+          print('User document does not exist');
+        }
       }
     } catch (e) {
       showDialog(
@@ -151,6 +172,16 @@ class RegistrationScreen extends StatelessWidget {
         );
 
         if (userCredential.user != null) {
+          // Captura o ID único do usuário gerado pelo Firebase Authentication
+          String userId = userCredential.user!.uid;
+
+          // Cria um documento na coleção 'users' com o ID do usuário
+          await FirebaseFirestore.instance.collection('users').doc(userId).set({
+            'isAdmin': false, // Define se o usuário é administrador ou não
+            // Outros campos do usuário, se necessário
+          });
+
+          // Fecha a tela de registro e retorna à tela anterior
           Navigator.pop(context);
         }
       } else {

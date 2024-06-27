@@ -323,7 +323,7 @@ class _CompraPageState extends State<CompraPage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => EventListScreen()),
+                  MaterialPageRoute(builder: (context) => UserEventListScreen()),
                   ModalRoute.withName('/'),
                 );
               },
