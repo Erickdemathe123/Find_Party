@@ -124,6 +124,11 @@ class LoginScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(height: 50),
+              Image.asset(
+                'assets/images/logo.png',
+                height: 100,
+              ),
+              SizedBox(height: 20),
               Text(
                 'Bem vindo ao Find Party',
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
@@ -137,9 +142,9 @@ class LoginScreen extends StatelessWidget {
               Text(
                 'Faça o seu login ou registre-se caso ainda não tenha uma conta',
                 style: TextStyle(
-                  fontSize: 16.0,
-                  color: Color.fromARGB(255, 73, 27, 27),
-                  fontWeight: FontWeight.bold
+                    fontSize: 16.0,
+                    color: Color.fromARGB(255, 73, 27, 27),
+                    fontWeight: FontWeight.bold
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -186,6 +191,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
 
 class RegistrationScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
