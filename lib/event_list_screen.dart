@@ -20,6 +20,9 @@ class _EventListScreenState extends State<EventListScreen> {
   bool _hasMore = true;
   final int _limit = 10;
 
+  final Color primaryColor = Color(0xFF8B0000);
+  final Color backgroundColor = Colors.black;
+
   @override
   void initState() {
     super.initState();
@@ -77,15 +80,17 @@ class _EventListScreenState extends State<EventListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Eventos'),
+        backgroundColor: primaryColor,
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.add, color: Colors.white),
             onPressed: () => _navigateToForm(null),
           ),
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.exit_to_app, color: Colors.white),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushAndRemoveUntil(
@@ -98,19 +103,20 @@ class _EventListScreenState extends State<EventListScreen> {
         ],
       ),
       body: _events.isEmpty && _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: primaryColor))
           : ListView.builder(
         controller: _scrollController,
         itemCount: _events.length + (_hasMore ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index == _events.length) return Center(child: CircularProgressIndicator());
+          if (index == _events.length) return Center(child: CircularProgressIndicator(color: primaryColor));
           final event = _events[index];
           return Card(
+            color: Colors.grey[900],
             elevation: 4,
             margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: ListTile(
-              title: Text(event.title),
-              subtitle: Text(event.date),
+              title: Text(event.title, style: TextStyle(color: Colors.white)),
+              subtitle: Text(event.date, style: TextStyle(color: Colors.grey[400])),
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => EventDetailScreen(event: event)),
@@ -119,11 +125,11 @@ class _EventListScreenState extends State<EventListScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: Icon(Icons.edit, color: primaryColor),
                     onPressed: () => _navigateToForm(event),
                   ),
                   IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: Icon(Icons.delete, color: Colors.redAccent),
                     onPressed: () => _deleteEvent(event),
                   ),
                 ],

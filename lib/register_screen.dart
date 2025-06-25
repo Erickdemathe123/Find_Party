@@ -7,6 +7,9 @@ class RegistrationScreen extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  final Color primaryColor = Color(0xFF8B0000); // Vinho escuro
+  final Color backgroundColor = Colors.black;
+
   Future<void> _register(BuildContext context) async {
     try {
       final String email = _emailController.text.trim();
@@ -31,12 +34,16 @@ class RegistrationScreen extends StatelessWidget {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text('Erro', style: TextStyle(color: Colors.red)),
-            content: Text('As senhas não coincidem.'),
+            backgroundColor: backgroundColor,
+            title: Text('Erro', style: TextStyle(color: Colors.redAccent)),
+            content: Text(
+              'As senhas não coincidem.',
+              style: TextStyle(color: Colors.white),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK', style: TextStyle(color: Colors.red)),
+                child: Text('OK', style: TextStyle(color: primaryColor)),
               )
             ],
           ),
@@ -50,12 +57,16 @@ class RegistrationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final inputBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red),
+      borderSide: BorderSide(color: primaryColor),
       borderRadius: BorderRadius.circular(4),
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text('Registro')),
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: Text('Registro'),
+        backgroundColor: primaryColor,
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -63,8 +74,10 @@ class RegistrationScreen extends StatelessWidget {
           children: [
             TextField(
               controller: _emailController,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Email',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -73,8 +86,10 @@ class RegistrationScreen extends StatelessWidget {
             TextField(
               controller: _passwordController,
               obscureText: true,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Senha',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -83,8 +98,10 @@ class RegistrationScreen extends StatelessWidget {
             TextField(
               controller: _confirmPasswordController,
               obscureText: true,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Confirmar Senha',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -93,7 +110,7 @@ class RegistrationScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => _register(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
               ),
               child: Text('Registrar'),

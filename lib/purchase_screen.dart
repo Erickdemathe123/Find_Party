@@ -6,20 +6,26 @@ class PurchaseScreen extends StatelessWidget {
 
   PurchaseScreen({required this.event});
 
+  final Color primaryColor = Color(0xFF8B0000);
+  final Color backgroundColor = Colors.black;
+
   void _completePurchase(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text('Compra Realizada', style: TextStyle(color: Colors.red)),
-        content: Text('Sua compra foi realizada com sucesso!', style: TextStyle(color: Colors.black87)),
+        backgroundColor: backgroundColor,
+        title: Text('Compra Realizada', style: TextStyle(color: Colors.greenAccent)),
+        content: Text(
+          'Sua compra foi realizada com sucesso!',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
-            child: Text('OK', style: TextStyle(color: Colors.red)),
+            child: Text('OK', style: TextStyle(color: primaryColor)),
           ),
         ],
       ),
@@ -29,32 +35,36 @@ class PurchaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Finalizar Compra')),
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: Text('Finalizar Compra'),
+        backgroundColor: primaryColor,
+      ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Evento: ${event.title}', style: TextStyle(fontSize: 18)),
-            Text('Data: ${event.date}', style: TextStyle(fontSize: 18)),
-            Text('Local: ${event.location}', style: TextStyle(fontSize: 18)),
+            Text('Evento: ${event.title}', style: TextStyle(fontSize: 18, color: Colors.white)),
+            Text('Data: ${event.date}', style: TextStyle(fontSize: 18, color: Colors.white)),
+            Text('Local: ${event.location}', style: TextStyle(fontSize: 18, color: Colors.white)),
             SizedBox(height: 20),
-            Text('Descrição: ${event.description}', style: TextStyle(fontSize: 16)),
+            Text('Descrição: ${event.description}', style: TextStyle(fontSize: 16, color: Colors.white70)),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => _completePurchase(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
               ),
               child: Text('Confirmar Compra'),
             ),
             SizedBox(height: 10),
-            ElevatedButton(
+            OutlinedButton(
               onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[200],
-                foregroundColor: Colors.red,
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: Colors.white24),
+                foregroundColor: primaryColor,
               ),
               child: Text('Voltar'),
             ),

@@ -17,16 +17,15 @@ class MyApp extends StatelessWidget {
       title: 'Find Party',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
         fontFamily: 'Roboto',
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Colors.black, // Fundo preto
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.red,
+          backgroundColor: Color(0xFF8B0000), // Vinho escuro
           foregroundColor: Colors.white,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
+            backgroundColor: Color(0xFF8B0000), // Vinho escuro
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -34,19 +33,19 @@ class MyApp extends StatelessWidget {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: Colors.red,
+            foregroundColor: Color(0xFF8B0000), // Vinho escuro
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.red),
+            borderSide: BorderSide(color: Color(0xFF8B0000)), // Vinho escuro
             borderRadius: BorderRadius.circular(4),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.red),
+            borderSide: BorderSide(color: Color(0xFF8B0000)), // Vinho escuro
             borderRadius: BorderRadius.circular(4),
           ),
-          labelStyle: TextStyle(color: Colors.red),
+          labelStyle: TextStyle(color: Color(0xFF8B0000)), // Vinho escuro
         ),
       ),
       home: MainTabController(),

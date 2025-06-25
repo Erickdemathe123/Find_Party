@@ -18,6 +18,9 @@ class _EventFormScreenState extends State<EventFormScreen> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
 
+  final Color primaryColor = Color(0xFF8B0000);
+  final Color backgroundColor = Colors.black;
+
   @override
   void initState() {
     super.initState();
@@ -87,13 +90,15 @@ class _EventFormScreenState extends State<EventFormScreen> {
   @override
   Widget build(BuildContext context) {
     final inputBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red),
+      borderSide: BorderSide(color: primaryColor),
       borderRadius: BorderRadius.circular(4),
     );
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(widget.event == null ? 'Novo Evento' : 'Editar Evento'),
+        backgroundColor: primaryColor,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -101,8 +106,10 @@ class _EventFormScreenState extends State<EventFormScreen> {
           children: [
             TextField(
               controller: _titleController,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Título',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -110,12 +117,14 @@ class _EventFormScreenState extends State<EventFormScreen> {
             SizedBox(height: 10),
             TextField(
               controller: _dateController,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Data',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.calendar_today, color: Colors.red),
+                  icon: Icon(Icons.calendar_today, color: primaryColor),
                   onPressed: _selectDate,
                 ),
               ),
@@ -124,8 +133,10 @@ class _EventFormScreenState extends State<EventFormScreen> {
             SizedBox(height: 10),
             TextField(
               controller: _locationController,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Local',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -133,8 +144,10 @@ class _EventFormScreenState extends State<EventFormScreen> {
             SizedBox(height: 10),
             TextField(
               controller: _descriptionController,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Descrição',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -142,8 +155,10 @@ class _EventFormScreenState extends State<EventFormScreen> {
             SizedBox(height: 10),
             TextField(
               controller: _priceController,
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Preço',
+                labelStyle: TextStyle(color: Colors.white),
                 border: inputBorder,
                 focusedBorder: inputBorder,
               ),
@@ -153,7 +168,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
             ElevatedButton(
               onPressed: _saveEvent,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
               ),
               child: Text('Salvar'),

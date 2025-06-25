@@ -8,6 +8,9 @@ class EventDetailScreen extends StatelessWidget {
 
   EventDetailScreen({required this.event});
 
+  final Color primaryColor = Color(0xFF8B0000);
+  final Color backgroundColor = Colors.black;
+
   void _handlePurchase(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -15,19 +18,19 @@ class EventDetailScreen extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: backgroundColor,
           title: Text(
             'Login necessário',
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.redAccent),
           ),
           content: Text(
             'Você precisa estar logado para comprar ingressos.',
-            style: TextStyle(color: Colors.black87),
+            style: TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK', style: TextStyle(color: Colors.red)),
+              child: Text('OK', style: TextStyle(color: primaryColor)),
             ),
           ],
         ),
@@ -43,7 +46,11 @@ class EventDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(event.title)),
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: Text(event.title),
+        backgroundColor: primaryColor,
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -51,18 +58,18 @@ class EventDetailScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('Data: ${event.date}', style: TextStyle(fontSize: 18)),
+              Text('Data: ${event.date}', style: TextStyle(fontSize: 18, color: Colors.white)),
               SizedBox(height: 10),
-              Text('Local: ${event.location}', style: TextStyle(fontSize: 18)),
+              Text('Local: ${event.location}', style: TextStyle(fontSize: 18, color: Colors.white)),
               SizedBox(height: 10),
-              Text('Descrição: ${event.description}', style: TextStyle(fontSize: 16)),
+              Text('Descrição: ${event.description}', style: TextStyle(fontSize: 16, color: Colors.white70)),
               SizedBox(height: 10),
-              Text('Preço: R\$ ${event.price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16)),
+              Text('Preço: R\$ ${event.price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16, color: Colors.white70)),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _handlePurchase(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: primaryColor,
                   foregroundColor: Colors.white,
                 ),
                 child: Text('Comprar'),
