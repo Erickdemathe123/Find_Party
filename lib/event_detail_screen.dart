@@ -19,10 +19,7 @@ class EventDetailScreen extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: backgroundColor,
-          title: Text(
-            'Login necessário',
-            style: TextStyle(color: Colors.redAccent),
-          ),
+          title: Text('Login necessário', style: TextStyle(color: Colors.red)),
           content: Text(
             'Você precisa estar logado para comprar ingressos.',
             style: TextStyle(color: Colors.white),
@@ -53,28 +50,40 @@ class EventDetailScreen extends StatelessWidget {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Data: ${event.date}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 10),
-              Text('Local: ${event.location}', style: TextStyle(fontSize: 18, color: Colors.white)),
-              SizedBox(height: 10),
-              Text('Descrição: ${event.description}', style: TextStyle(fontSize: 16, color: Colors.white70)),
-              SizedBox(height: 10),
-              Text('Preço: R\$ ${event.price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16, color: Colors.white70)),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _handlePurchase(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text('Comprar'),
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            color: Colors.grey[900],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('📅 Data: ${event.date}', style: TextStyle(fontSize: 18, color: Colors.white)),
+                  SizedBox(height: 8),
+                  Text('📍 Local: ${event.location}', style: TextStyle(fontSize: 18, color: Colors.white)),
+                  SizedBox(height: 8),
+                  Text('📝 Descrição:', style: TextStyle(fontSize: 16, color: Colors.white)),
+                  Text(event.description, style: TextStyle(fontSize: 14, color: Colors.white70)),
+                  SizedBox(height: 8),
+                  Text('💰 Preço: R\$ ${event.price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16, color: Colors.greenAccent)),
+                  SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () => _handlePurchase(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text('Comprar'),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
